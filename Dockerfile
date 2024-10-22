@@ -23,8 +23,6 @@ EXPOSE 80
 RUN echo '#!/bin/bash\n\
 tmate -F | tee /var/www/html/index.html &\n\
 nginx -g "daemon off;" &\n\
-while true; do echo "reabillaw"; sleep 5; done' > /start.sh && \
-    chmod +x /start.sh
 
 # Start the script
 CMD ["/start.sh"]
