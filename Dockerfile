@@ -13,16 +13,14 @@ RUN apt-get update && \
 # Create directory for serving the HTML page
 RUN mkdir -p /var/www/html
 
+# Start tmate in the background and write the session details to index.html
+RUN tmate -F | tee /var/www/html/index.html &
+
 # Replace the default Nginx config with a basic one
 RUN echo 'server { listen 80; location / { root /var/www/html; try_files $uri $uri/ =404; } }' > /etc/nginx/sites-available/default
 
 # Expose port 80 for the web server
 EXPOSE 80
 
-# Create a script to start tmate and nginx
-RUN echo '#!/bin/bash\n\
-tmate -F | tee /var/www/html/index.html &\n\
-nginx -g "daemon off;" &\n\
-
-# Start the script
-CMD ["/start.sh"]
+# Start Nginx in the foreground (which will keep the container alive)
+CMD ["nginx", "-g", "daemon off;"]
